@@ -1,0 +1,17 @@
+{
+  "slug": "espeto-do-ze",
+  "nome": "Espeto do Zé",
+  "logo": "tenants/espeto-do-ze/logo.png",
+  "logoMark": "tenants/espeto-do-ze/logo.png",
+  "colors": {
+    "primary": "#C8321E",
+    "accent": "#F2A900",
+    "background": "#FFF8F0",
+    "surface": "#FFFFFF",
+    "text": "#2A1A14"
+  },
+  "font": "Poppins",
+  "radius": 16,
+  "taxaServico": 10,
+  "mesas": 30
+}
