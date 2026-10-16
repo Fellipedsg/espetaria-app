@@ -1,5 +1,5 @@
 // ---------- PAINEL DE GESTÃO ----------
-let tab="pedidos", mesaSel=null;
+let tab="pedidos", mesaSel=null, edit=null;
 function gestao(){
  const T=S.theme,nav=[["pedidos","Pedidos"],["mesas","Mesas"],["cardapio","Cardápio"],["aparencia","Aparência"]];
  let h=`<div class="adm"><aside class="side">${T.logo?`<img src="${T.logo}" alt="${T.nome}">`:`<b style="font-size:20px;margin-bottom:16px">${T.nome}</b>`}${nav.map(([k,n])=>`<button class="${tab===k?"on":""}" data-a="nav" data-k="${k}">${n}</button>`).join("")}</aside><main class="main">`;
@@ -12,11 +12,21 @@ function gestao(){
    h+=`<div class="panel"><h3>Checkout — Mesa ${mesaSel}</h3>${its.map(i=>`<div class="row"><span>${i.q}× ${i.nome}</span><span>${R(i.p*i.q)}</span></div>`).join("")||"<p>Sem consumo.</p>"}
    <div class="row"><span>Subtotal</span><span>${R(sub)}</span></div><div class="row"><span>Serviço ${T.taxaServico}%</span><span>${R(tx)}</span></div><div class="row"><b>Total</b><b>${R(sub+tx)}</b></div><br>
    <div style="display:flex;gap:8px">${["Pix","Crédito","Débito","Dinheiro"].map(f=>`<button class="chip" data-a="paymethod">${f}</button>`).join("")}</div><br><button class="btn full" data-a="close" ${its.length?"":"disabled"}>Fechar mesa</button></div>`}}
- if(tab==="cardapio"){h+=`<h2>Cardápio</h2><table><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Disponível</th></tr>`+S.menu.prods.map(p=>`<tr><td>${p.e} ${p.nome}</td><td>${p.cat}</td><td><input type="number" step="0.5" value="${p.p}" data-a="price" data-i="${p.id}"></td><td><input type="checkbox" ${p.on?"checked":""} data-a="avail" data-i="${p.id}" style="width:22px;height:22px"></td></tr>`).join("")+`</table>`}
+ if(tab==="cardapio"){const cn=id=>(S.menu.cats.find(c=>c.id===id)||{}).nome||id;
+  h+=`<div class="r" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="margin:0">Cardápio</h2><button class="btn" data-a="novop">+ Novo item</button></div><table><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Disponível</th><th></th></tr>`+S.menu.prods.map(p=>`<tr><td>${p.e} <b>${p.nome}</b><br><small style="color:var(--muted)">${p.d||""}</small></td><td>${cn(p.cat)}</td><td><input type="number" step="0.5" value="${p.p}" data-a="price" data-i="${p.id}"></td><td><input type="checkbox" ${p.on?"checked":""} data-a="avail" data-i="${p.id}" style="width:22px;height:22px"></td><td style="white-space:nowrap"><button class="btn sm sec" data-a="editp" data-i="${p.id}">✏️ Editar</button> <button class="btn sm sec" data-a="delp" data-i="${p.id}" style="color:var(--danger)">🗑 Remover</button></td></tr>`).join("")+`</table>${S.menu.prods.length?"":"<p class='vz'>Nenhum item. Clique em “+ Novo item”.</p>"}`}
  if(tab==="aparencia"){const c=T.colors;h+=`<h2>Aparência</h2><div class="theme"><label>Nome<input value="${T.nome}" data-a="tnome"></label><label>Logo (PNG)<span style="display:flex;gap:8px;align-items:center">${T.logo?`<img src="${T.logo}" style="height:32px;max-width:90px;object-fit:contain"><button class="btn sm sec" data-a="rmlogo">Remover</button>`:""}<input type="file" accept="image/png,image/*" data-a="logofile" style="max-width:150px"></span></label>`+
   [["primary","Cor principal"],["accent","Destaque"],["background","Fundo"],["surface","Cards"],["text","Texto"]].map(([k,n])=>`<label>${n}<input type="color" value="${c[k]}" data-a="color" data-k="${k}"></label>`).join("")+
   `<label>Raio<input type="range" min="0" max="28" value="${T.radius}" data-a="radius"></label><label>Fonte<select data-a="font">${["Poppins","Inter","Montserrat","Oswald","Lora"].map(f=>`<option ${f===T.font?"selected":""}>${f}</option>`).join("")}</select></label></div>
   <p style="margin:16px 0;color:var(--muted)">Mudanças aplicam ao vivo (abra o app do cliente em outra aba). Cor do texto sobre o botão é calculada automaticamente. Para exportar: <button class="btn sm sec" data-a="export">copiar theme.json</button></p><button class="btn sm sec" data-a="reset">Restaurar demo</button>`}
+ if(edit){const p=edit;h+=`<div class="modal-bg" data-a="cancelp"><div class="modal"><h3>${p.id?"Editar item":"Novo item"}</h3>
+  <label>Nome<input id="f-nome" value="${(p.nome||"").replace(/"/g,"&quot;")}"></label>
+  <label>Descrição<input id="f-d" value="${(p.d||"").replace(/"/g,"&quot;")}"></label>
+  <div class="two"><label>Categoria<select id="f-cat">${S.menu.cats.map(c=>`<option value="${c.id}" ${c.id===p.cat?"selected":""}>${c.nome}</option>`).join("")}</select></label>
+  <label>Preço (R$)<input id="f-p" type="number" step="0.5" min="0" value="${p.p??""}"></label></div>
+  <div class="two"><label>Emoji<input id="f-e" value="${p.e||"🍢"}" maxlength="4"></label><label>Selo (opcional)<input id="f-tag" value="${p.tag||""}" placeholder="Mais pedido"></label></div>
+  <label class="chk"><input type="checkbox" id="f-ponto" ${p.ponto?"checked":""}> Perguntar ponto da carne</label>
+  <label class="chk"><input type="checkbox" id="f-on" ${p.on!==0?"checked":""}> Disponível</label>
+  <div class="r" style="display:flex;gap:8px;margin-top:16px"><button class="btn sec" style="flex:1" data-a="cancelp">Cancelar</button><button class="btn" style="flex:1" data-a="savep">Salvar</button></div></div></div>`}
  return h+"</main></div>"}
 let q="", filtro="todos";
 const COLS=[["novo","Na fila","📋","#6B2FA0"],["preparo","Preparando","🍳","#E07B00"],["pronto","Pronto","🔔","#1F9D55"]];
@@ -46,6 +56,15 @@ function ticket(o){document.getElementById("ticket").innerHTML=`<h1>MESA ${o.mes
 app.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,d=b.dataset;
  if(a==="nav"){tab=d.k;mesaSel=null}
  else if(a==="adv"){const o=S.orders.find(o=>o.id==d.id),k=Object.keys(ST);o.st=k[k.indexOf(o.st)+1];if(o.st==="pronto")o.tp=Date.now();save()}
+ else if(a==="novop")edit={cat:S.menu.cats[0].id,on:1}
+ else if(a==="editp")edit={...S.menu.prods.find(p=>p.id==d.i)}
+ else if(a==="cancelp"){if(e.target!==b&&b.className==="modal-bg")return;edit=null}
+ else if(a==="delp"){const p=S.menu.prods.find(p=>p.id==d.i);if(confirm(`Remover "${p.nome}" do cardápio?`)){S.menu.prods=S.menu.prods.filter(x=>x.id!=p.id);save()}}
+ else if(a==="savep"){const v=id=>document.getElementById(id),nome=v("f-nome").value.trim(),pr=parseFloat(v("f-p").value);
+  if(!nome||isNaN(pr)||pr<0){alert("Informe o nome e um preço válido.");return}
+  const n={...edit,nome,d:v("f-d").value.trim(),cat:v("f-cat").value,p:pr,e:v("f-e").value||"🍢",tag:v("f-tag").value.trim(),ponto:v("f-ponto").checked?1:0,on:v("f-on").checked?1:0};
+  if(n.id)S.menu.prods=S.menu.prods.map(x=>x.id==n.id?n:x);else{n.id=Math.max(0,...S.menu.prods.map(x=>x.id))+1;S.menu.prods.push(n)}
+  edit=null;save()}
  else if(a==="rmlogo"){S.theme.logo="";save()}
  else if(a==="cancel"){if(confirm("Cancelar este pedido?")){S.orders.find(o=>o.id==d.id).st="cancelado";save()}}
  else if(a==="chk"){const i=S.orders.find(o=>o.id==d.id).itens[d.ix];i.ok=!i.ok;save()}

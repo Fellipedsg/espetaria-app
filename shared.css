@@ -84,3 +84,9 @@ input[type=number]{width:90px;padding:6px;border:1px solid var(--border);border-
 .rd{color:var(--success);font-weight:600;font-size:14px}
 .btn.dark{background:#111;color:#fff}.btn.ok{background:var(--success);color:#fff}
 @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.kan{grid-template-columns:1fr!important}.adm{grid-template-columns:1fr}}
+
+.modal-bg{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:20;padding:16px}
+.modal{background:var(--c-surface);border-radius:var(--radius);padding:24px;width:100%;max-width:440px;max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.modal label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
+.modal input:not([type=checkbox]),.modal select{padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-weight:400;background:var(--c-surface);color:var(--c-text)}
+.modal .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.modal .chk{flex-direction:row;align-items:center;gap:8px;font-weight:400}.modal .chk input{width:20px;height:20px}
