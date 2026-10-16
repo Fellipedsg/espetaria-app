@@ -29,6 +29,7 @@ addEventListener("storage",()=>{S={theme:load("theme",THEME0),menu:load("menu",M
 const R=v=>"R$ "+v.toFixed(2).replace(".",",");
 const $=(h)=>{const t=document.createElement("template");t.innerHTML=h.trim();return t.content.firstChild};
 const app=document.getElementById("app");
+const pic=p=>p.img?`<img src="${p.img}" alt="">`:p.e||"🍢";
 const mkey=mesa=>S.orders.filter(o=>o.mesa==mesa&&!o.pago&&o.st!=="cancelado");
 const ST={novo:"Novo",preparo:"Em preparo",pronto:"Pronto",entregue:"Entregue",cancelado:"Cancelado"};
 // tenta ler theme.example.json (servido por http); senão usa o embutido

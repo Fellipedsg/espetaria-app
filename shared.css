@@ -90,3 +90,8 @@ input[type=number]{width:90px;padding:6px;border:1px solid var(--border);border-
 .modal label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600}
 .modal input:not([type=checkbox]),.modal select{padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit;font-weight:400;background:var(--c-surface);color:var(--c-text)}
 .modal .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.modal .chk{flex-direction:row;align-items:center;gap:8px;font-weight:400}.modal .chk input{width:20px;height:20px}
+
+.em{overflow:hidden}.em img{width:100%;height:100%;object-fit:cover}
+.big-em{width:100%!important;height:180px!important;font-size:64px!important;margin-bottom:12px}
+.prev,.th{display:inline-grid;place-items:center;width:56px;height:56px;border-radius:10px;background:var(--c-bg);overflow:hidden;font-size:28px;vertical-align:middle;flex:none}
+.prev img,.th img{width:100%;height:100%;object-fit:cover}

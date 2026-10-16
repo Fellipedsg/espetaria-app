@@ -14,12 +14,12 @@ function cliente(){
  }else{
   h+=`<div class="tabs">${S.menu.cats.map(c=>`<button class="tab ${c.id===cat?"on":""}" data-a="cat" data-c="${c.id}">${c.nome}</button>`).join("")}</div><div class="scroll">`+
   S.menu.prods.filter(p=>p.cat===cat).map(p=>{const q=cart.filter(i=>i.id===p.id).reduce((a,i)=>a+i.q,0);
-   return `<button class="card ${p.on?"":"off"}" ${p.on?`data-a="item" data-i="${p.id}"`:"disabled"}><div class="em">${p.e}</div><div><h3>${p.nome} ${p.tag?`<span class="tag">${p.tag}</span>`:""}</h3><p>${p.on?p.d:"Esgotado"}</p><div class="price">${R(p.p)}</div></div>${q?`<span class="qb">${q}</span>`:""}</button>`}).join("")+`</div>
+   return `<button class="card ${p.on?"":"off"}" ${p.on?`data-a="item" data-i="${p.id}"`:"disabled"}><div class="em">${pic(p)}</div><div><h3>${p.nome} ${p.tag?`<span class="tag">${p.tag}</span>`:""}</h3><p>${p.on?p.d:"Esgotado"}</p><div class="price">${R(p.p)}</div></div>${q?`<span class="qb">${q}</span>`:""}</button>`}).join("")+`</div>
   <div class="bar">${qtd?`<button class="btn" data-a="cart"><span>Ver pedido (${qtd})</span><span>${R(total)}</span></button>`:""}
   ${mkey(mesa).length?`<button class="btn sec sm" data-a="status">Acompanhar pedidos</button>`:""}
   <button class="btn sec" data-a="bill" ${S.bills.includes(mesa)?"disabled":""}>${S.bills.includes(mesa)?"✔ Conta solicitada — já vamos até você":"🧾 Pedir a conta"}</button></div>`
  }
- if(sheet){const p=sheet;h+=`<div class="sheet-bg" data-a="closesheet"><div class="sheet"><h2>${p.e} ${p.nome}</h2><p style="color:var(--muted)">${p.d}</p>
+ if(sheet){const p=sheet;h+=`<div class="sheet-bg" data-a="closesheet"><div class="sheet"><div class="em big-em">${pic(p)}</div><h2>${p.nome}</h2><p style="color:var(--muted)">${p.d}</p>
   ${p.ponto?`<div class="opts">${["Mal passado","Ao ponto","Bem passado"].map(x=>`<button class="chip ${sheet.sel===x?"on":""}" data-a="ponto" data-x="${x}">${x}</button>`).join("")}</div>`:""}
   <div class="step" style="justify-content:center;margin:12px 0"><button data-a="dec">–</button><b style="font-size:24px">${sheet.q}</b><button data-a="inc">+</button></div>
   <button class="btn full" data-a="add">Adicionar · ${R(p.p*sheet.q)}</button></div></div>`}
